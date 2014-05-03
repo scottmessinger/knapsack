@@ -127,7 +127,7 @@ KS.Collection.prototype._addToIndexes = function(indexes, doc){
 
 KS.Collection.prototype._addToIndex = function(index, doc){
     var self = this;
-    var docValue = doc[index.name]
+    var docValue = JSON.stringify(doc[index.name])
     index.values[docValue] = index.values[docValue] || []
     if (!_.include(index.values[docValue])){
         index.values[docValue].push(doc.id)
@@ -172,7 +172,7 @@ KS.Collection.prototype._indexFind = function(index, value, cb){
     return new Promise(function(resolve, reject){
         localforage.getItem(self.indexBaseName + index)
         .then(function(index, error){
-            var ids = index.values[value]
+            var ids = index.values[JSON.stringify(value)]
             if (ids.length == 0){
                 if (cb)   {cb([], error)}
                 if (error){reject(error)}
@@ -253,8 +253,8 @@ KS.Collection.prototype._removeFromIndexes = function(indexes, docToRemove){
 }
 
 KS.Collection.prototype._removeFromIndex = function(index, docToRemove){
-    var ids = index.values[docToRemove[index.name]]
-    var indexedValue = docToRemove[index.name]
+    var indexedValue = JSON.stringify(docToRemove[index.name])
+    var ids = index.values[indexedValue]
     var self = this;
     if (ids.length > 1){
        index.values[indexedValue]  = _.without(index.values[indexedValue], id)

@@ -54,10 +54,10 @@ asyncTest("it should add a doc to all the indexes", function(){
             deepEqual(_.include(value.ids, 2), true, "ID should be added to the posts collection")
         }))
         promises.push(localforage.getItem('ks_blog_posts_by_title', function(index){
-            deepEqual(_.include(index.values["Lamps"], 2), true, "ID should be added to the posts index")
+            deepEqual(_.include(index.values[JSON.stringify("Lamps")], 2), true, "ID should be added to the posts index")
         }))
         promises.push(localforage.getItem('ks_blog_posts_2', function(value){
-            deepEqual({id: 2, title: 'Lamps'}, value, "ID should be added to the index")
+            deepEqual({id: 2, title: 'Lamps'}, value, "Object should be added")
         }))
         Promise.all(promises).then(start)
     })
@@ -99,7 +99,7 @@ asyncTest("it should remove a record", function(){
         equal(_.include(collectionBrain.ids, 2), false, "Should be removed from the collection brain")
         return localforage.getItem('ks_blog_posts_by_title')
     }).then(function(index){
-        equal(_.include(index.values["Lamps"], 2), false, "The id should be removed from the index")
+        equal(_.include(index.values[JSON.stringify("Lamps")], 2), false, "The id should be removed from the index")
         start()
     }).catch(function(e){ console.log(e, e.stack) })
 })
@@ -121,8 +121,8 @@ asyncTest("it should update a record", function(){
         return localforage.getItem('ks_blog_posts_by_title')
     }).then(function(index){
         console.log(index)
-        equal(_.include(index.values["Lamps"], 2), false, "The old value should be removed from the index")
-        equal(_.include(index.values["Turtles"], 2), true, "The new value should be added to the index")
+        equal(_.include(index.values[JSON.stringify("Lamps")], 2), false, "The old value should be removed from the index")
+        equal(_.include(index.values[JSON.stringify("Turtles")], 2), true, "The new value should be added to the index")
         start()
     })
     .catch(function(e){ console.log(e, e.stack) })
