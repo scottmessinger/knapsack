@@ -139,7 +139,6 @@ KS.Collection.prototype.find = function(){
     var self = this;
     var cb;
     var args = Array.prototype.slice.call(arguments);
-    console.log(arguments, args)
     if (typeof _.last(args) == "function"){
         cb = args.pop()
     }
