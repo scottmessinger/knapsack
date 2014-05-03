@@ -127,3 +127,20 @@ asyncTest("it should update a record", function(){
     })
     .catch(function(e){ console.log(e, e.stack) })
 })
+
+asyncTest("it should find all the records for a collection", function(){
+    expect(1)
+
+    KS.db('blog').collection('posts').add({id: 2, title: 'Lamps'})
+    .then(function(){
+        return KS.db('blog').collection('posts').add({id: 3, title: 'Turtles'})
+    })
+    .then(function(){
+        return KS.db('blog').collection('posts').all()
+    })
+    .then(function(docs){
+        equal(docs.length, 2, "It should find all the docs")
+        start()
+    })
+})
+

@@ -137,19 +137,42 @@ KS.Collection.prototype._addToIndex = function(index, doc){
 
 KS.Collection.prototype.find = function(){
     var self = this;
-    if (arguments.length < 3){
+    if (arguments.length === 0){
+        // find all
+        return this._findAll()
+    } else if (arguments.length == 1 || arguments.length == 2){
+        // find by id
         id = arguments[0]
         cb = arguments[1]
-        return this._simpleFind(id, cb)
+        return this._findById(id, cb)
     } else {
+        // find by index
         index = arguments[0]
         value  = arguments[1]
         cb = arguments[2]
-        return this._indexFind(index, value, cb)
+        return this._findByIndex(index, value, cb)
     }
 }
 
-KS.Collection.prototype._simpleFind = function(id, cb){
+KS.Collection.prototype.all = function(){
+    var self = this;
+    return new Promise(function(resolve, reject){
+        localforage.getItem(self.brainName)
+        .then(function(brain){
+            return Promise.all(_.map(brain.ids, function(id){
+                return localforage.getItem(self.docBaseName + id)
+            }))
+        }).then(function(docs){
+            if (cb){ cb(docs) }
+            resolve(docs)
+        }).catch(function(error){
+            if (cb) { cb(null, error) }
+            reject(error)
+        })
+    })
+}
+
+KS.Collection.prototype._findById = function(id, cb){
     var self = this;
     return new Promise(function(resolve, reject){
         localforage.getItem(self.docBaseName + id)
@@ -164,7 +187,7 @@ KS.Collection.prototype._simpleFind = function(id, cb){
     })
 }
 
-KS.Collection.prototype._indexFind = function(index, value, cb){
+KS.Collection.prototype._findByIndex = function(index, value, cb){
     var self = this;
 
 
@@ -283,13 +306,11 @@ KS.Collection.prototype.update = function(newDoc){
                     return indexName
                 }
             }))
-            console.log(indexNamesToUpdate)
             return Promise.all(_.map(self.indexNames, function(indexName){
                 return localforage.getItem(self.indexBaseName + indexName)
             }))
         })
         .then(function(indexes){
-            console.log(indexes)
             return self._removeFromIndexes(indexes, oldDoc)
         })
         .then(function(){
