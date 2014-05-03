@@ -1,8 +1,15 @@
-# What is this?
+## What is this?
 
-A library to turn [localforage](http://http://mozilla.github.io/localForage) into a basic database. It adds collections & indexes on top of the key/value store provided by localforage.
+A library to turn [localforage](http://http://mozilla.github.io/localForage) into a basic database. It adds collections & indexes on top of the key/value store provided by localforage. Like localforage, it supports both promises and callbacks.
 
-# What's an example?
+## Why did you write this?
+
+- In my work for [Common Curriculum](http://www.commoncurriculum.com), a collaborative, online lesson planner, I needed a way to store data so teachers can plan their lessons on flaky or nonexistent wireless connections.
+- IndexedDb isn't supported by Safari (yet) and the shims/polyfills for it don't fully work.
+- WebSQL is a deprecated standards
+- `localforage` doesn't support collections, querying, or indexes, making it difficult to manage large amounts of data with it.
+
+## Here's an example...
 
 ```javascript
 
@@ -25,7 +32,8 @@ KS.config({
     }
 })
 
-// Third, start using is.
+// Third, start using is. There are 4 methods to the public API: add, find, remove, and update.
+// Like localforage, knapsack supports both promises & callbacks.
 
 // Add
 KS.db('blog').collection('posts').add({id: 2, title: 'Great Food'}
@@ -45,27 +53,22 @@ KS.db('blog').collection('posts').update({id: 2, title: 'Mexican Food'})
 
 ```
 
-# Requirements
+## Requirements
 - [localforage](https://github.com/mozilla/localForage/)
 - [underscore.js](http://underscorejs.org/)
 
 
-# Testing
+## Testing
 
 Open up `spec/index.html`. Tests are written in qUnit.
 
-# Why not use WebSQL or IndexedDb?
 
-- WebSQL is a deprecated standard.
-- IndexedDB is a great concept, but it has odd quirks on browsers that support it. On Safari, the two shims aren't complete and break. However, if you're interested in using IndexedDb, I recommend [bongo.js](https://github.com/aaronshaf/bongo.js).
-
-
-
-# What's next?
+## What's next?
 
 - Reindex the database when the version changes
 - Add support for more advance queries
+- Stop using a global and add support for require.js
 - Your idea here.
 
-# Thanks to...
+## Thanks to...
 [aaronshaf](https://github.com/aaronshaf) for his work on [bongo.js](https://github.com/aaronshaf/bongo.js). I borrowed the API he developed.
