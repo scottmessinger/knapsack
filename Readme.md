@@ -45,7 +45,7 @@ KS.db('blog').collection('posts').find(2)
 KS.db('blog').collection('posts').find('title', 'Great Food')
 
 // Remove
-KS.db('blog').collection('posts').remove({id: 2, title: 'Great Food'})
+KS.db('blog').collection('posts').remove(2)
 
 // Update
 KS.db('blog').collection('posts').update({id: 2, title: 'Mexican Food'})
