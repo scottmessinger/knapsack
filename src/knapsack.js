@@ -137,24 +137,25 @@ KS.Collection.prototype._addToIndex = function(index, doc){
 
 KS.Collection.prototype.find = function(){
     var self = this;
-    if (arguments.length === 0){
-        // find all
-        return this._findAll()
-    } else if (arguments.length == 1 || arguments.length == 2){
+    var cb;
+    var args = Array.prototype.slice.call(arguments);
+    console.log(arguments, args)
+    if (typeof _.last(args) == "function"){
+        cb = args.pop()
+    }
+    if (args.length == 1){
         // find by id
-        id = arguments[0]
-        cb = arguments[1]
+        id = args[0]
         return this._findById(id, cb)
     } else {
         // find by index
-        index = arguments[0]
-        value  = arguments[1]
-        cb = arguments[2]
+        index = args[0]
+        value  = args[1]
         return this._findByIndex(index, value, cb)
     }
 }
 
-KS.Collection.prototype.all = function(){
+KS.Collection.prototype.all = function(cb){
     var self = this;
     return new Promise(function(resolve, reject){
         localforage.getItem(self.brainName)
@@ -287,7 +288,7 @@ KS.Collection.prototype._removeFromIndex = function(index, docToRemove){
     return localforage.setItem(self.indexBaseName + index.name, index)
 }
 
-KS.Collection.prototype.update = function(newDoc){
+KS.Collection.prototype.update = function(newDoc, cb){
     var self = this;
 
     return new Promise(function(resolve, reject){
@@ -326,6 +327,7 @@ KS.Collection.prototype.update = function(newDoc){
             resolve()
         })
         .catch(function(error){
+            console.log(error, error.stack)
             if (cb) cb(null, error)
             reject(error)
         })
