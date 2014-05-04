@@ -41,7 +41,7 @@ KS.Database.prototype.init = function(){
 }
 
 KS.Database.prototype.execute = function(collection, resolve, reject, action, args){
-    console.log("registered", action, "on", collection.name)
+    //console.log("registered", action, "on", collection.name)
     this.ops.push({
         collection: collection,
         resolve: resolve,
@@ -55,22 +55,22 @@ KS.Database.prototype.execute = function(collection, resolve, reject, action, ar
 KS.Database.prototype.runReactor = function(){
     if (this.reactorRunning === true) return;
     if (this.ops.length === 0) return;
-    console.log('run reactor')
+    //console.log('run reactor')
     this.reactorRunning = true;
     var self = this;
 
     var op = this.ops.shift()
 
-    console.log('starting to execute', op.action, 'on', op.collection.name)
+    //console.log('starting to execute', op.action, 'on', op.collection.name)
     op.collection[op.action](op.args[0], op.args[1], op.args[2], op.args[3], op.args[4])
     .then(function(value){
-        console.log('excuted', op.action, 'on', op.collection.name, value)
+        //console.log('excuted', op.action, 'on', op.collection.name, value)
         op.resolve(value)
         self.reactorRunning = false;
         self.runReactor()
     }).catch(function(e){
         self.reactorRunning = false;
-        console.log('ERROR', e, e.stack)
+        //console.log('ERROR', e, e.stack)
         op.reject(e)
         throw new Error(e)
         self.runReactor()
@@ -236,7 +236,7 @@ KS.Collection.prototype._add  = function(doc, cb){
 }
 
 KS.Collection.prototype._addToIndexes = function(indexes, doc){
-    console.log('add to these indexes', indexes)
+    //console.log('add to these indexes', indexes)
     var self = this;
     return Promise.all(_.map(indexes, function(index){
         return self._addToIndex(index, doc)
@@ -281,7 +281,6 @@ KS.Collection.prototype._all = function(cb){
                 return localforage.getItem(self.docBaseName + id)
             }))
         }).then(function(docs){
-            if (docs == null){console.log("THE DOCS ARE NULL")}
             docs = _.compact(docs)
             if (cb){ cb(docs) }
             resolve(docs)
@@ -313,18 +312,17 @@ KS.Collection.prototype._findByIndex = function(index, value, cb){
 
     // this method is a bit messy with how the promises and mixed with callbacks
     return new Promise(function(resolve, reject){
-        console.log('looking at the index', index, 'on', self.name, self.indexBaseName + index)
+        //console.log('looking at the index', index, 'on', self.name, self.indexBaseName + index)
         localforage.getItem(self.indexBaseName + index)
-        //self.find('by_' + index)
         .then(function(index){
-            if (index == null || index == undefined) debugger;
+            //if (index == null || index == undefined) debugger;
             var ids = index.values[JSON.stringify(value)] || []
             if (ids.length == 0){
-                console.log('not in index')
+                //console.log('not in index')
                 if (cb){cb([])}
                 resolve([])
             } else if (ids.length == 1){
-                console.log('find an id in the index', ids[0])
+                //console.log('find an id in the index', ids[0])
                 return localforage.getItem(self.docBaseName + ids[0])
                 .then(function(item){
                     // it was deleted since we searched for it
@@ -346,9 +344,9 @@ KS.Collection.prototype._findByIndex = function(index, value, cb){
                     return localforage.getItem(self.docBaseName + id)
                 }))
                 .then(function(values){
-                    console.log(values)
+                    //console.log(values)
                     values = _.compact(values)
-                    console.log('values after find by index', values)
+                    //console.log('values after find by index', values)
                     if (cb) { cb(values) }
                     resolve(values)
                 }).catch(function(error){
