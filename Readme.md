@@ -32,11 +32,14 @@ KS.config({
     }
 })
 
-// Third, start using is. There are 4 methods to the public API: add, find, remove, and update.
+// Third, start using is. There are 5 methods to the public API: add, all, find, remove, and update.
 // Like localforage, knapsack supports both promises & callbacks.
 
+// All
+KS.db('blog').collection('posts').all()
+
 // Add
-KS.db('blog').collection('posts').add({id: 2, title: 'Great Food'}
+KS.db('blog').collection('posts').add({id: 2, title: 'Great Food'})
 
 // Find by id
 KS.db('blog').collection('posts').find(2)
@@ -50,8 +53,15 @@ KS.db('blog').collection('posts').remove(2)
 // Update
 KS.db('blog').collection('posts').update({id: 2, title: 'Mexican Food'})
 
-
 ```
+
+## What makes this noteworthy?
+
+- All operations are added to a queue and exectued sequentially. This helps prevent odd race conditions.
+- Powerful Indexes. You can index non strings.
+- Simple Api.
+- Promises. Everywhere.
+
 
 ## Requirements
 - [localforage](https://github.com/mozilla/localForage/)
@@ -66,7 +76,7 @@ Open up `spec/index.html`. Tests are written in qUnit.
 ## What's next?
 
 - Reindex the database when the version changes
-- Add support for more advance queries
+- Add a `.query` method that accepts a comparison function
 - Stop using a global and add support for require.js
 - Your idea here.
 
