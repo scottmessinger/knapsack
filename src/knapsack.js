@@ -256,7 +256,7 @@ KS.Collection.prototype._addToIndex = function(index, doc){
 KS.Collection.prototype._find = function(){
     var self = this;
     var cb;
-    var args = _.compact(Array.prototype.slice.call(arguments));
+    var args = _.without(Array.prototype.slice.call(arguments), undefined);
     if (typeof _.last(args) == "function"){
         cb = args.pop()
     }
