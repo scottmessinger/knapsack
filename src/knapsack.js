@@ -362,7 +362,6 @@ KS.Collection.prototype._findByIndex = function(index, value, cb){
 
 
 KS.Collection.prototype._remove = function(id, cb){
-    console.log('remove a document with id', id)
     var self = this;
     return new Promise(function(resolve, reject){
         // remove from localforage
@@ -444,7 +443,6 @@ KS.Collection.prototype._update = function(newDoc, cb){
         .then(function(value){
             oldDoc = value
             if (value == null){
-                console.log('doc wasnt found', newDoc)
                 if (cb){ cb(null, new Error("Document has already been deleted")) }
                 reject(new Error("Document has already been deleted"))
             }
@@ -452,7 +450,6 @@ KS.Collection.prototype._update = function(newDoc, cb){
         })
         .then(function(newDoc){
             indexNamesToUpdate = _.compact(_.map(self.indexNames, function(indexName){
-                console.log('oldDoc', oldDoc, index)
                 if (oldDoc[indexName] !== newDoc[indexName]){
                     return indexName
                 }
